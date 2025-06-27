@@ -1,65 +1,17 @@
-import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
+import { setupLayouts } from 'virtual:generated-layouts'
+import generatedRoutes from 'virtual:generated-pages'
 import { setupRouterGuards } from './guards'
 
-const routes: RouteRecordRaw[] = [
-  {
-    path: '/',
-    component: () => import('@/components/layout/AppLayout.vue'),
-    children: [
-      {
-        path: '',
-        redirect: '/voice-area'
-      },
-      {
-        path: 'voice-area',
-        name: 'VoiceArea',
-        component: () => import('@/views/voice-area/index.vue'),
-        meta: { title: '发声区', requiresAuth: true }
-      },
-      {
-        path: 'voice-area/suggestion',
-        name: 'Suggestion',
-        component: () => import('@/views/voice-area/suggestion/index.vue'),
-        meta: { title: '改善建议', requiresAuth: true }
-      },
-      {
-        path: 'voice-area/feedback',
-        name: 'Feedback',
-        component: () => import('@/views/voice-area/feedback/index.vue'),
-        meta: { title: '员工心声', requiresAuth: true }
-      },
-      {
-        path: 'idea-square',
-        name: 'IdeaSquare',
-        component: () => import('@/views/idea-square/index.vue'),
-        meta: { title: '点子广场', requiresAuth: true }
-      },
-      {
-        path: 'personal',
-        name: 'Personal',
-        component: () => import('@/views/personal/index.vue'),
-        meta: { title: '个人中心', requiresAuth: true }
-      }
-    ]
-  },
-  {
-    path: '/login',
-    name: 'Login',
-    component: () => import('@/views/login/index.vue'),
-    meta: { title: '登录' }
-  },
-  {
-    path: '/:pathMatch(.*)*',
-    component: () => import('@/views/error/404.vue')
-  }
-]
+// 使用插件的能力，将布局应用到自动生成的路由上
+const routes = setupLayouts(generatedRoutes)
 
 const router = createRouter({
   history: createWebHistory(),
-  routes
+  routes, // 直接使用处理过的、自动生成的路由
 })
 
-// 设置路由守卫
+// 路由守卫等其他功能可以继续保留
 setupRouterGuards(router)
 
 export default router
